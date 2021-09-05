@@ -15,6 +15,9 @@ if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
 endif()
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
+set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+set(CMAKE_INSTALL_RPATH "$ORIGIN")
+
 conan_cmake_configure(
     REQUIRES pybind11/2.6.2
     GENERATORS cmake_find_package

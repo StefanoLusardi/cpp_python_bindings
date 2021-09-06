@@ -3,6 +3,7 @@ import os
 import re
 import subprocess
 import sys
+import glob
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
@@ -120,8 +121,16 @@ class CMakeBuild(build_ext):
         )
 
 
+def lib_extension():
+    if sys.platform == "linux" or sys.platform == "linux2":
+        return ".so"
+    if sys.platform == "win32":
+        return ".dll"
+    if sys.platform == "darwin":
+        return ".dylib"
+
 setup(
-    name="cxx",
+    name="cxxlib",
     version="0.0.1",
     author="Stefano Lusardi",
     author_email="lusardi.stefano@gmail.com",
@@ -130,4 +139,5 @@ setup(
     ext_modules=[CMakeExtension("cpp_python_bindings")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
+    data_files=[("lib//site-packages", glob.glob(f"**/*{lib_extension()}", recursive=True))],
 )

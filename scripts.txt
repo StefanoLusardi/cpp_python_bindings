@@ -5,10 +5,12 @@ pip install . -v
 pip uninstall cxxlib
 
 # prepare to upload on test.pypi
-python setup.py sdist bdist_wheel
+python setup.py sdist
+python setup.py build_ext
+python setup.py bdist_wheel
 
 # upload on test.pypi
-twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+twine upload --repository testpypi dist/*
 
 # install from test.pypi:
 pip install -i https://test.pypi.org/simple/ cxxlib

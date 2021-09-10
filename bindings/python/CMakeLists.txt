@@ -1,9 +1,6 @@
 cmake_minimum_required (VERSION 3.17)
 
-project (cxxlib_python_bindings
-    LANGUAGES CXX 
-    VERSION 1.0.0
-)
+project (cxxlib_python_bindings CXX)
 
 set(CONAN_SYSTEM_INCLUDES ON)
 set(CONAN_CMAKE_SILENT_OUTPUT ON)
@@ -35,3 +32,4 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/bindings/p
 find_package(pybind11 REQUIRED QUIET)
 pybind11_add_module(cxxlib_python src/cxxlib_python.cpp)
 target_link_libraries(cxxlib_python PRIVATE cxxlib)
+target_compile_definitions(cxxlib_python PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})

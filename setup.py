@@ -19,7 +19,7 @@ class CMakeBuild(build_ext):
             extdir += os.path.sep
 
         cfg = "Release"
-        cmake_build_args = [ "-j8" "--config", cfg ]
+        cmake_build_args = [ "-j8", "--config", cfg ]
         cmake_configure_args = [
             "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={}".format(extdir),
             "-DPYTHON_EXECUTABLE={}".format(sys.executable),
@@ -41,17 +41,22 @@ class CMakeBuild(build_ext):
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_configure_args, cwd=self.build_temp)
         subprocess.check_call(["cmake", "--build", "."] + cmake_build_args, cwd=self.build_temp)
 
-lib_extension = { "linux": ".so", "win32": ".dll", "darwin": ".dylib"}
+def lib_extension():
+    if "linux" in sys.platform:
+        return ".so"
+    if sys.platform == "win32":
+        return ".dll"
+    if sys.platform == "darwin":
+        return ".dylib"
 
 setup(
     name="cxxlib",
-    version="0.0.1",
+    version="0.0.7",
     author="Stefano Lusardi",
     author_email="lusardi.stefano@gmail.com",
     description="A test project using pybind11 and CMake",
-    long_description="",
     ext_modules=[CMakeExtension("cpp_python_bindings")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
-    data_files=[("lib//site-packages", glob.glob(f"**/*{lib_extension[sys.platform]}", recursive=True))],
+    data_files=[("", glob.glob(f"**/*{lib_extension()}", recursive=True))],
 )

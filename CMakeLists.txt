@@ -12,13 +12,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-# set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-# set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+include(GNUInstallDirs)
 
 option(CXXLIB_TESTS "Build cxxlib tests" OFF)
 option(CXXLIB_EXAMPLES "Build cxxlib examples" OFF)
-option(CXXLIB_BINDINGS_PYTHON "Build cxxlib Python bindings" ON)
+option(CXXLIB_BINDINGS_PYTHON "Build cxxlib Python bindings" OFF)
 
 add_subdirectory(cxxlib)
 

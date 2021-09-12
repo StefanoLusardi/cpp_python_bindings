@@ -32,8 +32,8 @@ class CMakeBuild(build_ext):
             cmake_configure_args += ["-A", cmake_win_platform[self.plat_name]]
             cmake_configure_args += ["-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)]
         else:
-            import ninja  # noqa: F401
-            cmake_configure_args += ["-GNinja"]   
+            if subprocess.check_call(["ninja", "--version"]):
+                cmake_configure_args += ["-GNinja"]   
 
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
@@ -41,13 +41,14 @@ class CMakeBuild(build_ext):
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_configure_args, cwd=self.build_temp)
         subprocess.check_call(["cmake", "--build", "."] + cmake_build_args, cwd=self.build_temp)
 
-def lib_extension():
-    if "linux" in sys.platform:
-        return ".so"
+
+def data_files():
+    # Explicitly add Windows shared libs (.dll) as data_files
     if sys.platform == "win32":
-        return ".dll"
-    if sys.platform == "darwin":
-        return ".dylib"
+        return [("", glob.glob(f"**/*.dll", recursive=True))]
+    
+    # Linux shared libraries (.so) are already included
+    return []
 
 setup(
     name="cxxlib",
@@ -58,5 +59,5 @@ setup(
     ext_modules=[CMakeExtension("cpp_python_bindings")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
-    data_files=[("", glob.glob(f"**/*{lib_extension()}", recursive=True))],
+    data_files=data_files(),
 )

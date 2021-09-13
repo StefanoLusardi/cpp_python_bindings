@@ -2,33 +2,46 @@ trigger:
 - ci
 
 jobs:
+# - job: linux
+#   pool: {vmImage: 'ubuntu-16.04'}
+#   steps:
+#     - task: UsePythonVersion@0
+#       displayName: Set Python version (3.X)
+#       inputs:
+#         versionSpec: '3.x'
+#         addToPath: true
+#         architecture: 'x64'
+#     - task: CmdLine@2
+#       displayName: Install dependencies
+#       inputs:
+#         script: |
+#           set -o errexit
+#           python3 -m pip install --upgrade pip
+#           pip3 install cibuildwheel==2.1.1
+#     - task: CmdLine@2
+#       displayName: Build wheels
+#       inputs:
+#         script: cibuildwheel --output-dir wheelhouse .
+#     - task: PublishBuildArtifacts@1
+#       displayName: Publish Wheels
+#       inputs:
+#         PathtoPublish: 'wheelhouse'
+#         ArtifactName: 'cxxlib'
+#         publishLocation: 'Container'
 - job: linux
-  pool: {vmImage: 'ubuntu-20.04'}
+  pool: {vmImage: 'Ubuntu-16.04'}
   steps:
     - task: UsePythonVersion@0
-      displayName: Set Python version (3.X)
-      inputs:
-        versionSpec: '3.x'
-        addToPath: true
-        architecture: 'x64'
-    - task: CmdLine@2
+    - bash: |
+        set -o errexit
+        python3 -m pip install --upgrade pip
+        pip3 install cibuildwheel==2.1.1
       displayName: Install dependencies
-      inputs:
-        script: |
-          set -o errexit
-          python3 -m pip install --upgrade pip
-          pip3 install cibuildwheel==2.1.1
-    - task: CmdLine@2
+    - bash: cibuildwheel --output-dir wheelhouse .
       displayName: Build wheels
-      inputs:
-        script: cibuildwheel --output-dir wheelhouse .
     - task: PublishBuildArtifacts@1
-      displayName: Publish Wheels
-      inputs:
-        PathtoPublish: 'wheelhouse'
-        ArtifactName: 'cxxlib'
-        publishLocation: 'Container'
-
+      inputs: {pathtoPublish: 'wheelhouse'}
+      
 - job: windows
   pool: {vmImage: 'windows-2019'}
   steps:

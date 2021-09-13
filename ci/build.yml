@@ -1,45 +1,85 @@
 trigger:
 - ci
 
-strategy:
-  matrix:
-    ubuntu:
-      image_name: 'ubuntu-20.04'
-    win:
-      image_name: 'windows-2019'
-    mac:
-      image_name: 'macOS-10.15'
+jobs:
+- job: linux
+  pool: {vmImage: 'ubuntu-20.04'}
+  steps:
+    - task: UsePythonVersion@0
+      displayName: Set Python version (3.X)
+      inputs:
+        versionSpec: '3.x'
+        addToPath: true
+        architecture: 'x64'
+    - task: CmdLine@2
+      displayName: Install dependencies
+      inputs:
+        script: |
+          set -o errexit
+          python3 -m pip install --upgrade pip
+          pip3 install cibuildwheel==2.1.1
+    - task: CmdLine@2
+      displayName: Build wheels
+      inputs:
+        script: cibuildwheel --output-dir wheelhouse .
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Wheels
+      inputs:
+        PathtoPublish: 'wheelhouse'
+        ArtifactName: 'cxxlib'
+        publishLocation: 'Container'
 
-pool: 
-  vmImage: $(image_name)
+- job: windows
+  pool: {vmImage: 'windows-2019'}
+  steps:
+    - task: UsePythonVersion@0
+      displayName: Set Python version (3.X)
+      inputs:
+        versionSpec: '3.x'
+        addToPath: true
+        architecture: 'x64'
+    - task: CmdLine@2
+      displayName: Install dependencies
+      inputs:
+        script: |
+          set -o errexit
+          python -m pip install --upgrade pip
+          pip install cibuildwheel==2.1.1
+    - task: CmdLine@2
+      displayName: Build wheels
+      inputs:
+        script: cibuildwheel --output-dir wheelhouse .
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Wheels
+      inputs:
+        PathtoPublish: 'wheelhouse'
+        ArtifactName: 'cxxlib'
+        publishLocation: 'Container'
 
-steps:
-  - task: UsePythonVersion@0
-    displayName: Set Python version (3.X)
-    inputs:
-      versionSpec: '3.x'
-      addToPath: true
-      architecture: 'x64'
-
-  - task: CmdLine@2
-    displayName: Install dependencies
-    inputs:
-      script: |
-        set -o errexit
-        echo Python Version:
-        python --version
-        python -m pip install --upgrade pip
-        python -m pip install cibuildwheel==2.1.1
-
-  - task: CmdLine@2
-    displayName: Build wheels
-    inputs:
-      script: cibuildwheel --output-dir wheelhouse .
-
-  - task: PublishBuildArtifacts@1
-    displayName: Publish Wheels
-    inputs:
-      PathtoPublish: 'wheelhouse'
-      ArtifactName: 'drop'
-      publishLocation: 'Container'
+- job: macos
+  pool: {vmImage: 'macOS-10.15'}
+  steps:
+    - task: UsePythonVersion@0
+      displayName: Set Python version (3.X)
+      inputs:
+        versionSpec: '3.x'
+        addToPath: true
+        architecture: 'x64'
+    - task: CmdLine@2
+      displayName: Install dependencies
+      inputs:
+        script: |
+          set -o errexit
+          python3 -m pip install --upgrade pip
+          python3 -m pip install cibuildwheel==2.1.1
+    - task: CmdLine@2
+      displayName: Build wheels
+      inputs:
+        script: cibuildwheel --output-dir wheelhouse .
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Wheels
+      inputs:
+        PathtoPublish: 'wheelhouse'
+        ArtifactName: 'cxxlib'
+        publishLocation: 'Container'
 

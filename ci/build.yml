@@ -1,0 +1,45 @@
+trigger:
+- main
+
+strategy:
+  matrix:
+    ubuntu:
+      image_name: 'ubuntu-20.04'
+    win:
+      image_name: 'windows-2019'
+    mac:
+      image_name: 'macOS-10.15'
+
+pool: 
+  vmImage: $(image_name)
+
+steps:
+  - task: UsePythonVersion@0
+    displayName: Set Python version (3.X)
+    inputs:
+      versionSpec: '3.x'
+      addToPath: true
+      architecture: 'x64'
+
+  - task: CmdLine@2
+    displayName: Install dependencies
+    inputs:
+      script: |
+        set -o errexit
+        echo Python Version:
+        echo python --version
+        python -m pip install --upgrade pip
+        python -m pip install cibuildwheel==2.1.1
+
+  - task: CmdLine@2
+    displayName: Build wheels
+    inputs:
+      script: 'cibuildwheel --output-dir wheelhouse .'
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Wheels
+    inputs:
+      PathtoPublish: 'wheelhouse'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'
+

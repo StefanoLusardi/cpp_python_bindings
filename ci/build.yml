@@ -32,10 +32,9 @@ steps:
         python -m pip install cibuildwheel==2.1.1
 
   - task: CmdLine@2
-    enabled: False
     displayName: Build wheels
     inputs:
-      script: 'cibuildwheel --output-dir wheelhouse .'
+      script: cibuildwheel --output-dir wheelhouse .
 
   - task: PublishBuildArtifacts@1
     displayName: Publish Wheels

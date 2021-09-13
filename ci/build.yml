@@ -1,5 +1,5 @@
 trigger:
-- ci
+- '*'
 
 jobs:
 # - job: linux

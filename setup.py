@@ -36,7 +36,6 @@ class CMakeBuild(build_ext):
                 subprocess.check_call(["ninja", "--version"])
                 cmake_configure_args += ["-GNinja"]
             except subprocess.CalledProcessError as error:
-                print error
                 pass
 
         if not os.path.exists(self.build_temp):

@@ -33,9 +33,9 @@ class CMakeBuild(build_ext):
             cmake_configure_args += ["-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)]
         else:
             try:
-                subprocess.check_call(["ninja", "--version"])
-                cmake_configure_args += ["-GNinja"]
-            except subprocess.CalledProcessError as error:
+                if subprocess.check_call(["ninja", "--version"]) == 0:
+                    cmake_configure_args += ["-GNinja"]
+            except Exception as e:
                 pass
 
         if not os.path.exists(self.build_temp):

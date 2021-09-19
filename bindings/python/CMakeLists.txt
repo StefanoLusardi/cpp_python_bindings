@@ -16,7 +16,7 @@ set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 set(CMAKE_INSTALL_RPATH "$ORIGIN")
 
 conan_cmake_configure(
-    REQUIRES pybind11/2.6.2
+    REQUIRES pybind11/2.7.1
     GENERATORS cmake_find_package
     OUTPUT_QUIET
 )
@@ -30,7 +30,6 @@ conan_cmake_install(
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/bindings/python)
 
-find_package(Python COMPONENTS Interpreter Development REQUIRED)
 find_package(pybind11 REQUIRED QUIET)
 pybind11_add_module(cxxlib_python src/cxxlib_python.cpp)
 target_link_libraries(cxxlib_python PRIVATE cxxlib)

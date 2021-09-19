@@ -24,6 +24,8 @@ jobs:
       displayName: Build wheels
       inputs:
         script: cibuildwheel --output-dir wheelhouse .
+      env:
+        CIBW_BEFORE_ALL: pip install conan && source ~/.profile
     - task: PublishBuildArtifacts@1
       displayName: Publish Wheels
       inputs:
@@ -32,6 +34,7 @@ jobs:
         publishLocation: 'Container'
 
 - job: windows
+  condition: False
   pool: {vmImage: 'windows-2019'}
   steps:
     - task: UsePythonVersion@0
@@ -59,6 +62,7 @@ jobs:
         publishLocation: 'Container'
 
 - job: macos
+  condition: False
   pool: {vmImage: 'macOS-10.15'}
   steps:
     - task: UsePythonVersion@0

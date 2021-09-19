@@ -31,9 +31,7 @@ conan_cmake_install(
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/bindings/python)
 
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
-find_package(pybind11 CONFIG REQUIRED)
-
-# find_package(pybind11 REQUIRED QUIET)
+find_package(pybind11 REQUIRED QUIET)
 pybind11_add_module(cxxlib_python src/cxxlib_python.cpp)
 target_link_libraries(cxxlib_python PRIVATE cxxlib)
 target_compile_definitions(cxxlib_python PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})

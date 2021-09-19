@@ -16,7 +16,7 @@ include(GNUInstallDirs)
 
 option(CXXLIB_TESTS "Build cxxlib tests" OFF)
 option(CXXLIB_EXAMPLES "Build cxxlib examples" OFF)
-option(CXXLIB_BINDINGS_PYTHON "Build cxxlib Python bindings" OFF)
+option(CXXLIB_BINDINGS_PYTHON "Build cxxlib Python bindings" ON)
 
 add_subdirectory(cxxlib)
 

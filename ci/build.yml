@@ -25,7 +25,7 @@ jobs:
       inputs:
         script: cibuildwheel --output-dir wheelhouse .
       env:
-        CIBW_BEFORE_ALL: 'pip install --user conan && echo ##################### && ln -s /root/.local/bin/conan /usr/local/bin/conan && conan --version'
+        CIBW_BEFORE_ALL: 'pipx install conan && echo ##################### && conan --version'
     - task: PublishBuildArtifacts@1
       displayName: Publish Wheels
       inputs:

@@ -35,7 +35,11 @@ jobs:
       inputs:
         script: cibuildwheel --output-dir wheelhouse .
       env:
-        CIBW_BEFORE_ALL: 'pipx install conan && conan install pybind11/2.7.1@'
+        CIBW_BEFORE_ALL: '>
+          pipx install conan && 
+          conan profile update settings.compiler.libcxx=libstdc++11 default && 
+          conan install pybind11/2.7.1@
+          find . -name "libpython3.8.so"'
         CIBW_BUILD: cp38-*
         CIBW_SKIP: pp*
     - task: PublishBuildArtifacts@1

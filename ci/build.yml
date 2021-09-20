@@ -18,8 +18,18 @@ jobs:
       inputs:
         script: |
           set -o errexit
-          python3 -m pip install --upgrade pip
-          pip3 install cibuildwheel==2.1.1
+          pip install --upgrade pip
+          pipx install cibuildwheel==2.1.1
+          pipx install conan
+          source ~/.profile
+          echo $(conan --version)
+    # - task: CmdLine@2
+    #   displayName: Install dependencies
+    #   inputs:
+    #     script: |
+    #       set -o errexit
+    #       python3 -m pip install --upgrade pip
+    #       pip3 install cibuildwheel==2.1.1
     - task: CmdLine@2
       displayName: Build wheels
       inputs:
@@ -27,6 +37,7 @@ jobs:
       env:
         CIBW_BEFORE_ALL: 'pipx install conan'
         CIBW_BUILD: cp38-*
+        CIBW_SKIP: pp*
     - task: PublishBuildArtifacts@1
       displayName: Publish Wheels
       inputs:

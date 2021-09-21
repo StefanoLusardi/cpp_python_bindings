@@ -39,7 +39,7 @@ jobs:
         CIBW_BEFORE_ALL: 'pipx install conan && 
           conan profile new default --detect && 
           conan profile update settings.compiler.libcxx=libstdc++11 default && 
-          conan install pybind11/2.7.1@
+          conan install pybind11/2.7.1@ &&
           pip install pybind11'
         CIBW_BEFORE_BUILD: 'find . -name "libpython3.8.so"'
         CIBW_BUILD: cp38-*

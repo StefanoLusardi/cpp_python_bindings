@@ -12,6 +12,7 @@ message("#########################")
 set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 set(CMAKE_INSTALL_RPATH "$ORIGIN")
 
+#[[
 set(CONAN_SYSTEM_INCLUDES ON)
 set(CONAN_CMAKE_SILENT_OUTPUT ON)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -35,10 +36,13 @@ conan_cmake_install(
     OUTPUT_QUIET
 )
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/bindings/python)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/bindings/python)
+]]
 
-find_package(pybind11 REQUIRED QUIET)
+# list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/bindings/python)
+# list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/bindings/python)
+
+add_subdirectory(pybind11)
+# find_package(pybind11 CONFIG REQUIRED QUIET)
 pybind11_add_module(cxxlib_python src/cxxlib_python.cpp)
 target_link_libraries(cxxlib_python PRIVATE cxxlib)
 target_compile_definitions(cxxlib_python PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})

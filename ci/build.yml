@@ -13,37 +13,29 @@ jobs:
         versionSpec: '3.x'
         addToPath: true
         architecture: 'x64'
-    - task: CmdLine@2
-      displayName: Install dependencies
-      inputs:
-        script: |
-          set -o errexit
-          pip install --upgrade pip
-          pipx install cibuildwheel==2.1.1
-          pipx install conan
-          source ~/.profile
-          echo $(conan --version)
     # - task: CmdLine@2
     #   displayName: Install dependencies
     #   inputs:
     #     script: |
     #       set -o errexit
-    #       python3 -m pip install --upgrade pip
-    #       pip3 install cibuildwheel==2.1.1
+    #       pip install --upgrade pip
+    #       pipx install cibuildwheel==2.1.1
+    - task: CmdLine@2
+      displayName: Install dependencies
+      inputs:
+        script: |
+          set -o errexit
+          python3 -m pip install --upgrade pip
+          pip3 install cibuildwheel==2.1.1
     - task: CmdLine@2
       displayName: Build wheels
       inputs:
         script: cibuildwheel --output-dir wheelhouse .
       env:
-        CIBW_BUILD_VERBOSITY: 3
-        CIBW_BEFORE_ALL: 'pipx install conan && 
-          conan profile new default --detect && 
-          conan profile update settings.compiler.libcxx=libstdc++11 default && 
-          conan install pybind11/2.7.1@ &&
-          pip install pybind11'
-        CIBW_BEFORE_BUILD: 'find . -name "libpython3.8.so"'
-        CIBW_BUILD: cp38-*
         CIBW_SKIP: pp*
+        CIBW_BEFORE_ALL: 'python3 -m pip install conan && 
+          conan profile new default --detect && 
+          conan profile update settings.compiler.libcxx=libstdc++11 default'
     - task: PublishBuildArtifacts@1
       displayName: Publish Wheels
       inputs:
@@ -52,7 +44,6 @@ jobs:
         publishLocation: 'Container'
 
 - job: windows
-  condition: False
   pool: {vmImage: 'windows-2019'}
   steps:
     - task: UsePythonVersion@0
@@ -72,6 +63,10 @@ jobs:
       displayName: Build wheels
       inputs:
         script: cibuildwheel --output-dir wheelhouse .
+      env:
+        CIBW_SKIP: pp*
+        CIBW_BEFORE_ALL: 'python -m pip install conan && 
+          conan profile new default --detect'
     - task: PublishBuildArtifacts@1
       displayName: Publish Wheels
       inputs:
@@ -80,7 +75,6 @@ jobs:
         publishLocation: 'Container'
 
 - job: macos
-  condition: False
   pool: {vmImage: 'macOS-10.15'}
   steps:
     - task: UsePythonVersion@0
@@ -100,6 +94,10 @@ jobs:
       displayName: Build wheels
       inputs:
         script: cibuildwheel --output-dir wheelhouse .
+      env:
+        CIBW_SKIP: pp*
+        CIBW_BEFORE_ALL: 'python3 -m pip install conan && 
+          conan profile new default --detect'
     - task: PublishBuildArtifacts@1
       displayName: Publish Wheels
       inputs:

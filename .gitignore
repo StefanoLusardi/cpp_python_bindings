@@ -1,5 +1,5 @@
-.vscode
-/build
+.vscode*
+build/*
 /dist
 /*.egg*
-compile_commands*
+compile_commands.json

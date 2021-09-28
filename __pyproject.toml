@@ -1,9 +1,0 @@
-[build-system]
-requires = [
-    "setuptools",
-    "wheel",
-    "ninja; sys_platform != 'win32' and platform_machine != 'arm64'",
-    "cmake",
-    "Cython",
-]
-build-backend = "setuptools.build_meta"

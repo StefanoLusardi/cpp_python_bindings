@@ -47,11 +47,7 @@ class CMakeBuild(build_ext):
 
 def data_files():
     # Explicitly add Windows shared libs (.dll) as data_files
-    if sys.platform == "win32":
-        return [("", glob.glob(f"**/*.dll", recursive=True))]
-    
-    # Linux shared libraries (.so) are already included
-    return []
+    return [("", glob.glob(f"**/*.dll", recursive=True))]
 
 setup(
     name="cxxlib",

@@ -1,5 +1,4 @@
-cmake_minimum_required (VERSION 3.17)
-
+cmake_minimum_required (VERSION 3.16)
 project(cxxlib_project
     LANGUAGES CXX 
     VERSION 1.0.0
@@ -14,9 +13,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(GNUInstallDirs)
 
-option(CXXLIB_TESTS "Build cxxlib tests" OFF)
+option(CXXLIB_TESTS "Build cxxlib tests" ON)
 option(CXXLIB_EXAMPLES "Build cxxlib examples" ON)
 option(CXXLIB_BINDINGS_PYTHON "Build cxxlib Python bindings" ON)
+
+set(CONAN_SYSTEM_INCLUDES ON)
+set(CONAN_CMAKE_SILENT_OUTPUT ON)
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake" TLS_VERIFY ON)
+endif()
+include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 add_subdirectory(cxxlib)
 

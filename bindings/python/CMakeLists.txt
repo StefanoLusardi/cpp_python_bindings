@@ -1,5 +1,4 @@
-cmake_minimum_required (VERSION 3.17)
-
+cmake_minimum_required (VERSION 3.16)
 project (cxxlib_python_bindings CXX)
 
 set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)

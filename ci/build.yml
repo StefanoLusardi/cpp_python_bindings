@@ -3,99 +3,178 @@ trigger:
     include:
       - '*'
 
-jobs:
-- job: linux
-  pool: {vmImage: 'ubuntu-20.04'}
-  steps:
-    - task: UsePythonVersion@0
-      displayName: Set Python version (3.X)
-      inputs:
-        versionSpec: '3.x'
-        addToPath: true
-        architecture: 'x64'
-    - task: CmdLine@2
-      displayName: Install dependencies
-      inputs:
-        script: |
-          set -o errexit
-          python3 -m pip install --upgrade pip
-          pip3 install cibuildwheel==2.1.1
-    - task: CmdLine@2
-      displayName: Build wheels
-      inputs:
-        script: cibuildwheel --output-dir wheelhouse .
-      env:
-        CIBW_SKIP: pp*
-        CIBW_BEFORE_ALL: 'pipx install conan && 
-          conan profile new default --detect && 
-          conan profile update settings.compiler.libcxx=libstdc++11 default'
-    - task: PublishBuildArtifacts@1
-      displayName: Publish Wheels
-      inputs:
-        PathtoPublish: 'wheelhouse'
-        ArtifactName: 'linux'
-        publishLocation: 'Container'
+stages:
+- stage: build_cpp_library
+  displayName: 'Build C++ Library'
+  jobs:
+  - job: linux
+    pool: {vmImage: 'ubuntu-20.04'}
+    steps:
+      - task: CmdLine@2
+        displayName: Configure
+        inputs:
+          script: |
+            echo configure
+      - task: CmdLine@2
+        displayName: Build
+        inputs:
+          script: |
+            echo build
+      - task: CmdLine@2
+        displayName: Unit Test
+        inputs:
+          script: |
+            echo unit test
+      - task: CmdLine@2
+        displayName: Examples
+        inputs:
+          script: |
+            echo examples
 
-- job: windows
-  pool: {vmImage: 'windows-2019'}
-  steps:
-    - task: UsePythonVersion@0
-      displayName: Set Python version (3.X)
-      inputs:
-        versionSpec: '3.x'
-        addToPath: true
-        architecture: 'x64'
-    - task: CmdLine@2
-      displayName: Install dependencies
-      inputs:
-        script: |
-          set -o errexit
-          python -m pip install --upgrade pip
-          pip install cibuildwheel==2.1.1
-    - task: CmdLine@2
-      displayName: Build wheels
-      inputs:
-        script: cibuildwheel --output-dir wheelhouse .
-      env:
-        CIBW_SKIP: pp*
-        CIBW_BEFORE_ALL: 'python -m pip install conan && 
-          conan profile new default --detect'
-    - task: PublishBuildArtifacts@1
-      displayName: Publish Wheels
-      inputs:
-        PathtoPublish: 'wheelhouse'
-        ArtifactName: 'windows'
-        publishLocation: 'Container'
+  - job: windows
+    pool: {vmImage: 'windows-2019'}
+    steps:
+      - task: CmdLine@2
+        displayName: Configure
+        inputs:
+          script: |
+            echo configure
+      - task: CmdLine@2
+        displayName: Build
+        inputs:
+          script: |
+            echo build
+      - task: CmdLine@2
+        displayName: Unit Test
+        inputs:
+          script: |
+            echo unit test
+      - task: CmdLine@2
+        displayName: Examples
+        inputs:
+          script: |
+            echo examples
 
-- job: macos
-  pool: {vmImage: 'macOS-10.15'}
-  steps:
-    - task: UsePythonVersion@0
-      displayName: Set Python version (3.X)
-      inputs:
-        versionSpec: '3.x'
-        addToPath: true
-        architecture: 'x64'
-    - task: CmdLine@2
-      displayName: Install dependencies
-      inputs:
-        script: |
-          set -o errexit
-          python3 -m pip install --upgrade pip
-          python3 -m pip install cibuildwheel==2.1.1
-    - task: CmdLine@2
-      displayName: Build wheels
-      inputs:
-        script: cibuildwheel --output-dir wheelhouse .
-      env:
-        CIBW_SKIP: pp*
-        CIBW_BEFORE_ALL: 'python3 -m pip install conan && 
-          conan profile new default --detect'
-    - task: PublishBuildArtifacts@1
-      displayName: Publish Wheels
-      inputs:
-        PathtoPublish: 'wheelhouse'
-        ArtifactName: 'mac'
-        publishLocation: 'Container'
-    
+  - job: macos
+    pool: {vmImage: 'macOS-10.15'}
+    steps:
+      - task: CmdLine@2
+        displayName: Configure
+        inputs:
+          script: |
+            echo configure
+      - task: CmdLine@2
+        displayName: Build
+        inputs:
+          script: |
+            echo build
+      - task: CmdLine@2
+        displayName: Unit Test
+        inputs:
+          script: |
+            echo unit test
+      - task: CmdLine@2
+        displayName: Examples
+        inputs:
+          script: |
+            echo examples
+
+- stage: build_python_bindings
+  #dependsOn: build_cpp_library
+  displayName: 'Build Python Bindings'
+  jobs:
+  - job: linux
+    pool: {vmImage: 'ubuntu-20.04'}
+    steps:
+      - task: UsePythonVersion@0
+        displayName: Set Python version (3.X)
+        inputs:
+          versionSpec: '3.x'
+          addToPath: true
+          architecture: 'x64'
+      - task: CmdLine@2
+        displayName: Install dependencies
+        inputs:
+          script: |
+            set -o errexit
+            python3 -m pip install --upgrade pip
+            pip3 install cibuildwheel==2.1.1
+      - task: CmdLine@2
+        displayName: Build wheels
+        inputs:
+          script: cibuildwheel --output-dir wheelhouse .
+        env:
+          CIBW_SKIP: pp*
+          CIBW_BEFORE_ALL: 'pipx install conan && 
+            conan profile new default --detect && 
+            conan profile update settings.compiler.libcxx=libstdc++11 default'
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Wheels
+        inputs:
+          PathtoPublish: 'wheelhouse'
+          ArtifactName: 'linux'
+          publishLocation: 'Container'
+
+  - job: windows
+    pool: {vmImage: 'windows-2019'}
+    steps:
+      - task: UsePythonVersion@0
+        displayName: Set Python version (3.X)
+        inputs:
+          versionSpec: '3.x'
+          addToPath: true
+          architecture: 'x64'
+      - task: CmdLine@2
+        displayName: Install dependencies
+        inputs:
+          script: |
+            set -o errexit
+            python -m pip install --upgrade pip
+            pip install cibuildwheel==2.1.1
+      - task: CmdLine@2
+        displayName: Build wheels
+        inputs:
+          script: cibuildwheel --output-dir wheelhouse .
+        env:
+          CIBW_SKIP: pp*
+          CIBW_BEFORE_ALL: 'python -m pip install conan && 
+            conan profile new default --detect'
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Wheels
+        inputs:
+          PathtoPublish: 'wheelhouse'
+          ArtifactName: 'windows'
+          publishLocation: 'Container'
+
+  - job: macos
+    pool: {vmImage: 'macOS-10.15'}
+    steps:
+      - task: UsePythonVersion@0
+        displayName: Set Python version (3.X)
+        inputs:
+          versionSpec: '3.x'
+          addToPath: true
+          architecture: 'x64'
+      - task: CmdLine@2
+        displayName: Install dependencies
+        inputs:
+          script: |
+            set -o errexit
+            python3 -m pip install --upgrade pip
+            python3 -m pip install cibuildwheel==2.1.1
+      - task: CmdLine@2
+        displayName: Build wheels
+        inputs:
+          script: cibuildwheel --output-dir wheelhouse .
+        env:
+          CIBW_SKIP: pp*
+          CIBW_BEFORE_ALL: 'python3 -m pip install conan && 
+            conan profile new default --detect'
+      - task: PublishBuildArtifacts@1
+        displayName: Publish Wheels
+        inputs:
+          PathtoPublish: 'wheelhouse'
+          ArtifactName: 'mac'
+          publishLocation: 'Container'
+      
 

@@ -31,6 +31,7 @@ class CMakeBuild(build_ext):
             cmake_win_platform = { "win32": "Win32", "win-amd64": "x64", "win-arm32": "ARM", "win-arm64": "ARM64" }
             cmake_configure_args += ["-A", cmake_win_platform[self.plat_name]]
             cmake_configure_args += ["-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)]
+            cmake_configure_args += ["-DCMAKE_RUNTIME_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)]
         else:
             try:
                 if subprocess.check_call(["ninja", "--version"]) == 0:
@@ -45,10 +46,6 @@ class CMakeBuild(build_ext):
         subprocess.check_call(["cmake", "--build", "."] + cmake_build_args, cwd=self.build_temp)
 
 
-def data_files():
-    # Explicitly add Windows shared libs (.dll) as data_files
-    return [("", glob.glob(f"**/*.dll", recursive=True))]
-
 setup(
     name="cxxlib",
     version="0.0.7",
@@ -58,5 +55,4 @@ setup(
     ext_modules=[CMakeExtension("cpp_python_bindings")],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
-    data_files=data_files(),
 )

@@ -15,5 +15,14 @@ set(CXXLIB_TESTS_SOURCES
 
 add_executable(${PROJECT_NAME} ${CXXLIB_TESTS_SOURCES})
 target_link_libraries(${PROJECT_NAME} PRIVATE cxxlib PRIVATE GTest::gtest)
+
 include(GoogleTest)
-gtest_discover_tests(${PROJECT_NAME})
+gtest_discover_tests(${PROJECT_NAME} DISCOVERY_MODE PRE_TEST)
+
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+if(WIN32)
+    file(GLOB CXXLIB_TESTS_EXE "${CMAKE_BINARY_DIR}/**/${PROJECT_NAME}.exe")
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CXXLIB_TESTS_EXE} "${CMAKE_BINARY_DIR}/bin/")
+endif()

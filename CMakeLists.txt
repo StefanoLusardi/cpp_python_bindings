@@ -11,8 +11,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(GNUInstallDirs)
-
 option(CXXLIB_TESTS "Build cxxlib tests" ON)
 option(CXXLIB_EXAMPLES "Build cxxlib examples" ON)
 option(CXXLIB_BINDINGS_PYTHON "Build cxxlib Python bindings" ON)
@@ -24,6 +22,8 @@ if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
     file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/master/conan.cmake" "${CMAKE_BINARY_DIR}/conan.cmake" TLS_VERIFY ON)
 endif()
 include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+include(GNUInstallDirs)
 
 add_subdirectory(cxxlib)
 

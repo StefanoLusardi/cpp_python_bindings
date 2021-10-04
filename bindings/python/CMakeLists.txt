@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 3.16)
-project (cxxlib_python_bindings CXX)
+project (cxxlib_python CXX)
 
 set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
 set(CMAKE_INSTALL_RPATH "$ORIGIN")
@@ -18,6 +18,6 @@ if(NOT pybind11_POPULATED)
 endif()
 
 
-pybind11_add_module(cxxlib_python src/cxxlib_python.cpp)
-target_link_libraries(cxxlib_python PRIVATE cxxlib)
-target_compile_definitions(cxxlib_python PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})
+pybind11_add_module(${PROJECT_NAME} src/cxxlib_python.cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE cxxlib)
+target_compile_definitions(${PROJECT_NAME} PRIVATE VERSION_INFO=${EXAMPLE_VERSION_INFO})

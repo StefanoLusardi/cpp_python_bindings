@@ -1,5 +1,6 @@
 .vscode*
 build/*
+install/*
 /dist
 /*.egg*
 compile_commands.json

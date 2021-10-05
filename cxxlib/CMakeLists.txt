@@ -27,8 +27,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${cxxlib_VERSION} SOVER
 install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${CXXLIB_HEADERS} DESTINATION include/${PROJECT_NAME})
 
-if(WIN32)
-    file(GLOB CXXLIB_DLL "${CMAKE_BINARY_DIR}/**/${PROJECT_NAME}.dll")
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CXXLIB_DLL} "${CMAKE_BINARY_DIR}/bin/")
-endif()
+# if(WIN32)
+#     file(GLOB CXXLIB_DLL "${CMAKE_BINARY_DIR}/**/${PROJECT_NAME}.dll")
+#     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#         COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CXXLIB_DLL} "${CMAKE_BINARY_DIR}/bin/")
+# endif()
